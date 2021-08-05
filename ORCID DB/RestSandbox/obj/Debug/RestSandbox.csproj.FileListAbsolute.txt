@@ -1,0 +1,12 @@
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\bin\Debug\RestSandbox.exe.config
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\bin\Debug\RestSandbox.exe
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\bin\Debug\RestSandbox.pdb
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\bin\Debug\Newtonsoft.Json.dll
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\bin\Debug\RestSharp.dll
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\bin\Debug\Newtonsoft.Json.xml
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\bin\Debug\RestSharp.xml
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\obj\Debug\RestSandbox.csproj.CoreCompileInputs.cache
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\obj\Debug\RestSandbox.csproj.CopyComplete
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\obj\Debug\RestSandbox.exe
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\obj\Debug\RestSandbox.pdb
+C:\Users\spike\source\repos\ORCID DB\RestSandbox\obj\Debug\RestSandbox.csproj.AssemblyReference.cache
