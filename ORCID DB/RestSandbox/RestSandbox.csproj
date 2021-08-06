@@ -120,6 +120,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MDBiSchoolsReade.cs" />
+    <Compile Include="OrcidExtractor.cs" />
+    <Compile Include="ParseHubExtractor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
