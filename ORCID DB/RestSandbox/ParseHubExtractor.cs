@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace RestSandbox
 {
     class ParseHubExtractor
-    {
+    { 
         public String GetResearcherORCIDID()
         {
             var client = new RestClient(" https://www.parsehub.com/api/v2/projects/tMQrtJvJgtm-/run");
@@ -91,7 +91,7 @@ namespace RestSandbox
 
             var cts = new CancellationTokenSource();
 
-            PollForData(() =>
+            PollForORCIDID(() =>
             {
                 ParseHubResponse parseHubResponse = GetORCIDID(runToken);
                 if (parseHubResponse.statusCode  == "OK")
@@ -140,7 +140,24 @@ namespace RestSandbox
                 }
             }, token);
         }
+
+        private void PollForORCIDID(Action action, int seconds, CancellationToken token)
+        {
+            if (action == null)
+                return;
+            Task.Run(async () =>
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    action();
+                    await Task.Delay(TimeSpan.FromSeconds(seconds), token);
+                }
+            }, token);
+        }
+
     }
+
+
 
     internal class ParseHubResponse
     {

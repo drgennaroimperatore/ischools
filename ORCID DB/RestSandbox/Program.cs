@@ -13,8 +13,10 @@ namespace RestSandbox
         static void Main(string[] args)
         {
             ParseHubExtractor parseHubExtractor = new ParseHubExtractor();
-            Console.WriteLine(parseHubExtractor.GetResearcherORCIDID());
+            // Console.WriteLine(parseHubExtractor.GetResearcherORCIDID());
 
+            MDBiSchoolsReade dBiSchoolsReade = new MDBiSchoolsReade();
+            dBiSchoolsReade.GetDataBaseObject();
             Console.ReadLine();
         }
 
