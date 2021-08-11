@@ -12,14 +12,17 @@ namespace RestSandbox
 {
     class ParseHubExtractor
     { 
-        public String GetResearcherORCIDID()
+        public String GetResearcherORCIDID(String researcherUrl)
         {
+            String orcidID = "";
             var client = new RestClient(" https://www.parsehub.com/api/v2/projects/tMQrtJvJgtm-/run");
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
           //  request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddParameter("api_key", "twWf3s2XUkKN");
             request.AddParameter("format", "json");
+            /*start_url (Optional)	The url to start running on. Defaults to the project’s start_site*/
+            request.AddParameter("start_url", researcherUrl);
             IRestResponse response = client.Execute(request);
             
             var data = (JObject)JsonConvert.DeserializeObject(response.Content);
@@ -36,16 +39,16 @@ namespace RestSandbox
                 {
                     cts.Cancel(); // cancel the timer task
                                   // and call the other scraper to get the orciddata
-                     Console.WriteLine(parseHubResponse.data);
+                 //    Console.WriteLine(parseHubResponse.data);
                      //Console.ReadLine();
-                    RunORCIDIDScraper(parseHubResponse.data);
+                    orcidID = RunORCIDIDScraper(parseHubResponse.data);
                 }
             }, 1, cts.Token);
 
-          
-           
 
-            return "WIP";
+
+
+            return orcidID;
         }
 
         private ParseHubResponse GetPurePortalURL(String runToken)
@@ -57,7 +60,7 @@ namespace RestSandbox
 
             IRestResponse dataResponse = dataClient.Execute(dataRequest);
             String statusCode = dataResponse.StatusCode.ToString();
-            Console.WriteLine(statusCode);
+           // Console.WriteLine(statusCode);
 
             if(statusCode=="OK")
                 Console.WriteLine(dataResponse.Content);
@@ -75,6 +78,7 @@ namespace RestSandbox
 
         private String RunORCIDIDScraper(String startUrl)
         {
+            String ORCIDID = "";
             var client = new RestClient(" https://www.parsehub.com/api/v2/projects/t4-ULJRgyjKk/run");
             var request = new RestRequest(Method.POST);
             request.AddHeader("cache-control", "no-cache");
@@ -98,10 +102,11 @@ namespace RestSandbox
                 {
                     cts.Cancel(); // cancel the timer task
                     Console.WriteLine("OrcidID Found: " + parseHubResponse.data);
+                    ORCIDID = parseHubResponse.data;
                 }
             }, 1, cts.Token);
 
-            return "id";
+            return ORCIDID;
         }
 
         private ParseHubResponse GetORCIDID (string runToken)
