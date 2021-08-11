@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,10 +24,29 @@ namespace RestSandbox
                 IMongoDatabase ischoolsDB = client.GetDatabase("ischdb_experimental");
                
               var facultyDocuments = ischoolsDB.GetCollection<BsonDocument>("faculty",null);
+                ParseHubExtractor parseHubExtractor = new ParseHubExtractor();
+               // parseHubExtractor.GetResearcherORCIDID();
 
-               foreach(var f in facultyDocuments.Find(new BsonDocument()).ToList())
+                int index = 0;
+                
+                foreach (var f in facultyDocuments.Find(new BsonDocument()).ToList())
                 {
-                    Console.WriteLine(f.ToJson());
+                    // Console.WriteLine(f.ToJson());
+                    String name = f.GetValue("name").AsString;
+                    String url = f.GetValue("url").AsString;
+                    String orcidID = "";
+                   Console.WriteLine();
+                    if (url.Contains("strath.ac.uk"))
+                    {
+                        string path = Directory.GetCurrentDirectory();
+                        using (StreamWriter outputFile = new StreamWriter(Path.Combine(path, "orcids.txt")))
+                        {
+                            orcidID =   parseHubExtractor.GetResearcherORCIDID(url);
+                            outputFile.WriteLine(name + ":" + orcidID);
+                        }
+
+                    }
+                    index++;
                 }
 
 
