@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace RestSandbox
@@ -29,23 +30,75 @@ namespace RestSandbox
 
                 int index = 0;
                 ParseHubExtractor parseHubExtractor = new ParseHubExtractor();
+                String path = Directory.GetCurrentDirectory();
+                String filename = "orcid.txt";
+                path = Path.Combine(path, filename);
 
-                foreach (var f in facultyDocuments.Find(new BsonDocument()).ToList())
+                bool fileCreated = File.Exists(path);
+
+                if (!fileCreated)
                 {
-                    // Console.WriteLine(f.ToJson());
-                    String name = f.GetValue("name").AsString;
-                    String url = f.GetValue("url").AsString;
-                    String orcidID = "";
-                   Console.WriteLine();
-                    if (url.Contains("strath.ac.uk"))
+                    StreamWriter listWriter = new StreamWriter(path, false);
+                    foreach (var f in facultyDocuments.Find(new BsonDocument()).ToList())
+                    {
+                        // Console.WriteLine(f.ToJson());
+                        String name = f.GetValue("name").AsString;
+                        String url = f.GetValue("url").AsString;
+                        String orcidID = "";
+                        Console.WriteLine();
+                        if (url.Contains("strath.ac.uk"))
+                        {
+
+                            orcidID = parseHubExtractor.GetResearcherORCIDID(url, name);
+
+                            listWriter.WriteLine(name + ":" + orcidID);
+                        }
+                        index++;
+                    }
+                    listWriter.Close();
+                }
+                else
+                {
+                    var workCollection = ischoolsDB.GetCollection<BsonDocument>("works");
+                    if (workCollection == null)
                     {
 
-                        orcidID = parseHubExtractor.GetResearcherORCIDID(url,name);
+                        Console.WriteLine("works collection does not exist. Creating...");
+                        ischoolsDB.CreateCollection("works");
                     }
-                    index++;
-                }
 
-                parseHubExtractor.getParsedOrcids();
+                    Console.WriteLine("Reading orcid list file... ");
+                    StreamReader streamReader = new StreamReader(path);
+                    String line = "";
+                    while ((line =streamReader.ReadLine() )!= null)
+                    {
+
+                        String[] orcidID = line.Split(':');
+                        Console.WriteLine("Extracting data for " + orcidID[0]);
+                        if(orcidID[1] =="")
+                        {
+                            Console.WriteLine("Missing ORCID ID. Skipping");
+                            continue;
+                        }
+
+                        Console.WriteLine(orcidID[2]);
+
+                        string pattern = "orcid.org(?[a-z]*)";
+                       Console.WriteLine( Regex.Match(orcidID[2], pattern).ToString());
+                            
+
+
+                      
+
+                        OrcidExtractor orcidExtractor = new OrcidExtractor();
+
+
+                       
+
+                        //workCollection.InsertOne
+                        }
+                        
+                }
 
                
 
@@ -53,7 +106,7 @@ namespace RestSandbox
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error with Connection " + e.Message);
+                Console.WriteLine("Error: " + e.Message);
             }
 
            

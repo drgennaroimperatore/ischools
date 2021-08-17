@@ -15,11 +15,14 @@ namespace RestSandbox
 
             // Console.WriteLine(parseHubExtractor.GetResearcherORCIDID());
 
-            //
+            
             MDBiSchoolsReade dBiSchoolsReade = new MDBiSchoolsReade();
-            dBiSchoolsReade.GetDataBaseObject();
+             dBiSchoolsReade.GetDataBaseObject();
 
-          //  new ParseHubExtractor().syncedPoll(3);
+            //  new ParseHubExtractor().syncedPoll(3);
+
+           // OrcidExtractor orcidExtractor = new OrcidExtractor();
+           // orcidExtractor.Extract("");
             Console.ReadLine();
         }
 

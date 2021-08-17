@@ -42,29 +42,10 @@ namespace RestSandbox
             Console.WriteLine("Found run token :" + runToken);
 
             string pureUrl = syncedPollPureURL(2, runToken);
-            RunORCIDIDScraper(pureUrl);
+            string orcidID =   RunORCIDIDScraper(pureUrl);
 
 
-            /*   var cts = new CancellationTokenSource();
-
-               PollForData(() =>
-                { ParseHubResponse parseHubResponse = GetPurePortalURL(runToken);
-
-                    if (parseHubResponse.statusCode == "OK")
-                    {
-                        cts.Cancel(); // cancel the timer task
-                                      // and call the other scraper to get the orciddata
-                                      //    Console.WriteLine(parseHubResponse.data);
-                                      //Console.ReadLine();
-                    RunORCIDIDScraper(parseHubResponse.data);
-
-
-                    }
-                }, 1, cts.Token);
-
-               */
-
-            return "";
+            return orcidID;
         }
 
         private ParseHubResponse GetPurePortalURL(String runToken)
@@ -92,7 +73,7 @@ namespace RestSandbox
             return parseHubResponse;
         }
 
-        private bool RunORCIDIDScraper(String startUrl)
+        private String RunORCIDIDScraper(String startUrl)
         {
             bool status = false;
             var client = new RestClient(" https://www.parsehub.com/api/v2/projects/t4-ULJRgyjKk/run");
@@ -112,33 +93,13 @@ namespace RestSandbox
 
             var cts = new CancellationTokenSource();
 
-            Console.WriteLine("Found orcidid :" + syncedPollORCIDID(3, runToken));
-            /*
-                        PollForORCIDID(() =>
-                        {
-                            ParseHubResponse parseHubResponse = GetORCIDID(runToken);
-                            if (parseHubResponse.statusCode == "OK")
-                            {
-                                cts.Cancel(); // cancel the timer task
-                                Console.WriteLine("OrcidID Found: " + parseHubResponse.data);
+            String orcidID = syncedPollORCIDID(3, runToken);
 
-                                orcidID.Add(parseHubResponse.data);
-                                String path = Directory.GetCurrentDirectory();
-                                status = true;
+            Console.WriteLine("Found orcidid :" + orcidID );
+            
+                       
 
-
-
-                            }
-                        }, 1, cts.Token);
-
-                        if (cts.Token.IsCancellationRequested)
-                        {
-
-
-                        }
-            */
-
-            return status;
+            return orcidID;
         }
 
         private ParseHubResponse GetORCIDID(string runToken)
@@ -163,10 +124,11 @@ namespace RestSandbox
 
             }
             //    Task.WaitAll(waitList.ToArray());
-            Console.WriteLine("Execution ended");
+          
             return parseHubResponse;
         }
 
+        #region OLD CODE
         private void PollForData(Action action, int seconds, CancellationToken token)
         {
             if (action == null)
@@ -212,6 +174,8 @@ namespace RestSandbox
             return orcidID;
 
         }
+
+        #endregion
 
         public String syncedPollORCIDID(int seconds, string runToken)
         {
@@ -272,7 +236,7 @@ namespace RestSandbox
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                //Console.WriteLine(e.Message);
             }
             return parseHubResponse.data;
         }

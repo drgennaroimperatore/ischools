@@ -11,19 +11,17 @@ namespace RestSandbox
     class OrcidExtractor
     {
         private String mAccessToken = null;
-        public void Extract()
+        public void Extract(string orcidIDNumberFormat)
         {
             if (mAccessToken == null)
                 mAccessToken = GetToken();
            
-            var qclient = new RestClient(" https://pub.orcid.org/v2.1/0000-0002-5018-0340/record");
+            var qclient = new RestClient(" https://pub.orcid.org/v3.0/0000-0002-5018-0340/works");
             qclient.AddDefaultHeader("authorization", String.Format("bearer {0}", mAccessToken)); ;
             var qrequest = new RestRequest(Method.GET);
-            // qrequest.AddHeader("cache-control", "no-cache");
-            qrequest.AddHeader("content-type", "application/orcid+json");
-            qrequest.AddParameter("accept", "application/json");
-            //qrequest.AddParameter("application/x-www-form-urlencoded", "client_id=APP-O5COE6Q0DG7GL1DW&client_secret=8385cc63-48af-4679-b556-99b7168d37cb", ParameterType.RequestBody);
-
+            
+            qrequest.AddHeader("accept", "application/json");
+            
             IRestResponse qresponse = qclient.Execute(qrequest);
 
             Console.WriteLine(qresponse.ErrorMessage);
