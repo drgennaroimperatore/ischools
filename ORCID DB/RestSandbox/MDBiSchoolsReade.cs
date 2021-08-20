@@ -57,7 +57,7 @@ namespace RestSandbox
                     }
                     listWriter.Close();
                 }
-                else
+                else // we have a list of orcid ids already....
                 {
                     var workCollection = ischoolsDB.GetCollection<BsonDocument>("works");
                     if (workCollection == null)
@@ -83,17 +83,16 @@ namespace RestSandbox
 
                         Console.WriteLine(orcidID[2]);
 
-                        string pattern = "orcid.org(?[a-z]*)";
-                       Console.WriteLine( Regex.Match(orcidID[2], pattern).ToString());
+                        string pattern = "orcid.org.(.+)";
+                        String numericID = Regex.Match(orcidID[2], pattern).Groups[1].ToString();
+                       Console.WriteLine(numericID );
                             
 
 
-                      
-
                         OrcidExtractor orcidExtractor = new OrcidExtractor();
+                        orcidExtractor.Extract(numericID);
 
-
-                       
+                        return; // stop at the first person... 
 
                         //workCollection.InsertOne
                         }

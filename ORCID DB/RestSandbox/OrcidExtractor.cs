@@ -16,7 +16,7 @@ namespace RestSandbox
             if (mAccessToken == null)
                 mAccessToken = GetToken();
            
-            var qclient = new RestClient(" https://pub.orcid.org/v3.0/0000-0002-5018-0340/works");
+            var qclient = new RestClient(" https://pub.orcid.org/v3.0/"+orcidIDNumberFormat+"/works");
             qclient.AddDefaultHeader("authorization", String.Format("bearer {0}", mAccessToken)); ;
             var qrequest = new RestRequest(Method.GET);
             

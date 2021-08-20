@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
+
 namespace RestSandbox
 {
     class Program
@@ -15,14 +16,18 @@ namespace RestSandbox
 
             // Console.WriteLine(parseHubExtractor.GetResearcherORCIDID());
 
-            
-            MDBiSchoolsReade dBiSchoolsReade = new MDBiSchoolsReade();
-             dBiSchoolsReade.GetDataBaseObject();
+            // MDBiSchoolsReade dBiSchoolsReade = new MDBiSchoolsReade();
+            //  dBiSchoolsReade.GetDataBaseObject();
 
             //  new ParseHubExtractor().syncedPoll(3);
 
-           // OrcidExtractor orcidExtractor = new OrcidExtractor();
-           // orcidExtractor.Extract("");
+            // OrcidExtractor orcidExtractor = new OrcidExtractor();
+            // orcidExtractor.Extract("");
+            //   NLPEngine nLPEngine = new NLPEngine();
+            // nLPEngine.ExtractKeyWords();
+
+            ElesvierAPI elesvier = new ElesvierAPI();
+            elesvier.GetAuthorisationToken();
             Console.ReadLine();
         }
 
