@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace RestSandbox
 {
     class ElesvierAPI
@@ -21,8 +22,8 @@ namespace RestSandbox
             //request.AddHeader("X-ELS-ResourceVersion", "new");
             //request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddHeader("Accept", "application/json");
-            request.AddParameter("field", "given-name(crawford)");
-            request.AddParameter("field", "surname(revie)");
+            request.AddParameter("query", "AUTHFIRST(Gennaro) AND AUTHLASTNAME(Imperatore)");
+            
             IRestResponse response = client.Execute(request);
 
             Console.WriteLine(response.Content);
