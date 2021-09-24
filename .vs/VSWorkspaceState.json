@@ -1,8 +1,11 @@
 {
   "ExpandedNodes": [
     "",
-    "\\ORCID DB"
+    "\\ORCID DB",
+    "\\ORCID DB\\RestSandbox",
+    "\\ORCID DB\\RestSandbox\\bin",
+    "\\ORCID DB\\RestSandbox\\bin\\Debug"
   ],
-  "SelectedNode": "\\ORCID DB\\ORCID DB.sln",
+  "SelectedNode": "\\ORCID DB\\RestSandbox\\MDBiSchoolsReade.cs",
   "PreviewInSolutionExplorer": false
 }

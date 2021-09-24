@@ -27,7 +27,9 @@ namespace RestSandbox
             // nLPEngine.ExtractKeyWords();
 
             ElesvierAPI elesvier = new ElesvierAPI();
-            elesvier.GetAuthorisationToken();
+            //elesvier.SearchByAuthor("Gennaro", "Imperatore", "University of Strathclyde");
+            //elesvier.SearchByPublication("Imperatore", "University of Strathclyde");
+            elesvier.SearchByAuthorID(elesvier.getAuthorID("Gennaro", "Imperatore", "University of Strathclyde"));
             Console.ReadLine();
         }
 

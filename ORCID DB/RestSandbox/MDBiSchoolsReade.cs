@@ -52,6 +52,15 @@ namespace RestSandbox
                             orcidID = parseHubExtractor.GetResearcherORCIDID(url, name);
 
                             listWriter.WriteLine(name + ":" + orcidID);
+
+                            if (orcidID != null)
+
+                            {
+                                // add the orcid id to our database
+                                var filter = Builders<BsonDocument>.Filter.Eq("name", f["name"] );
+                                var update = Builders<BsonDocument>.Update.Set("orcidid", orcidID);
+                                facultyDocuments.UpdateOne(filter, update);
+                            }
                         }
                         index++;
                     }
@@ -79,6 +88,13 @@ namespace RestSandbox
                         {
                             Console.WriteLine("Missing ORCID ID. Skipping");
                             continue;
+                        }
+                        else
+                        {
+                           
+
+
+
                         }
 
                         Console.WriteLine(orcidID[2]);
