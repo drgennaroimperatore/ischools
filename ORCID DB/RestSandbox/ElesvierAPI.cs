@@ -70,28 +70,52 @@ namespace RestSandbox
             return authorID;
         }
 
-        public String SearchByPublication(string eid)
+        public HashSet<String> SearchByPublication(string eid)
         {
-            String result = "";
+            HashSet<String> result = new HashSet<string>();
 
-            var client = new RestClient(" https://api.elsevier.com/content/abstract/eid/"+eid);
+            var client = new RestClient(" https://api.elsevier.com/content/abstract/eid/" + eid);
             var request = new RestRequest(Method.GET);
             request.AddHeader("X-ELS-APIKey", "4a70171325e8753d35fd83ba22370741");
             // request.AddHeader("X-ELS-ReqId", "gennaroimperatore");
             //request.AddHeader("X-ELS-ResourceVersion", "new");
             //request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddHeader("Accept", "application/json");
-           // request.AddParameter("query", String.Format("eid({0})",eid));
+            // request.AddParameter("query", String.Format("eid({0})",eid));
             IRestResponse response = client.Execute(request);
 
-            Console.WriteLine(response.Content);
+            // Console.WriteLine(response.Content);
 
             var t = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(response.Content);
+            try
+            {
+                var citationInfo = t.Children().Last().First().First().First().ElementAt(2).First().First().First()["citation-info"];
+                var authorKeyWords = citationInfo.First().First()["author-keyword"];
+                Console.WriteLine(authorKeyWords);
+                foreach (var a in authorKeyWords)
+                {
+                   
+                    result.Add(a["$"].ToString());
+                }
+            } catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+                
+
+
            // Console.WriteLine(t["search-results"].Children().First()["preferred-name"]);
             Console.WriteLine(response.IsSuccessful);
             Console.WriteLine(response.StatusCode);
 
             return result;
+        }
+
+        public HashSet<String> GetKeyWords()
+        {
+            HashSet<String> keywords = new HashSet<String>();
+
+            return keywords;
         }
 
         public String SearchByAuthorID(String authorID)
@@ -115,15 +139,23 @@ namespace RestSandbox
             {
                 var t = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(response.Content);
                 var publications = t["search-results"].Children().Last().First();
-                eid = publications.Children().First()["eid"].ToString();
+                //Console.WriteLine(publications);
+                foreach (var pub in publications.Children())
+                {
+                    Console.WriteLine(pub["eid"]);
+                    eid = pub["eid"].ToString();
+                    SearchByPublication(eid);
+
+                }
+             //   
             }
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
             }
-            SearchByPublication(eid);
-            Console.WriteLine(response.IsSuccessful);
-            Console.WriteLine(response.StatusCode);
+          //  
+           // Console.WriteLine(response.IsSuccessful);
+          //  Console.WriteLine(response.StatusCode);
 
             return result;
         }
