@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -43,9 +44,7 @@ namespace RestSandbox
             var client = new RestClient(" https://api.elsevier.com/content/search/author");
             var request = new RestRequest(Method.GET);
             request.AddHeader("X-ELS-APIKey", "4a70171325e8753d35fd83ba22370741");
-            // request.AddHeader("X-ELS-ReqId", "gennaroimperatore");
-            //request.AddHeader("X-ELS-ResourceVersion", "new");
-            //request.AddHeader("content-type", "application/x-www-form-urlencoded");
+           
             request.AddHeader("Accept", "application/json");
             request.AddParameter("query", String.Format("AUTHFIRST({0}) AND AUTHLASTNAME({1}) AND AFFIL({2})", firstName, lastName, affiliation));
 
@@ -77,25 +76,66 @@ namespace RestSandbox
             var client = new RestClient(" https://api.elsevier.com/content/abstract/eid/" + eid);
             var request = new RestRequest(Method.GET);
             request.AddHeader("X-ELS-APIKey", "4a70171325e8753d35fd83ba22370741");
-            // request.AddHeader("X-ELS-ReqId", "gennaroimperatore");
-            //request.AddHeader("X-ELS-ResourceVersion", "new");
-            //request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddHeader("Accept", "application/json");
             // request.AddParameter("query", String.Format("eid({0})",eid));
             IRestResponse response = client.Execute(request);
 
             // Console.WriteLine(response.Content);
 
-            var t = (Newtonsoft.Json.Linq.JObject)JsonConvert.DeserializeObject(response.Content);
+            JObject t = (Newtonsoft.Json.Linq.JObject) JsonConvert.DeserializeObject(response.Content);
+            JToken citationInfo = JToken.FromObject("");
+            JToken subjectAreas = JToken.FromObject("");
             try
             {
-                var citationInfo = t.Children().Last().First().First().First().ElementAt(2).First().First().First()["citation-info"];
-                var authorKeyWords = citationInfo.First().First()["author-keyword"];
+                JEnumerable<JToken> children;
+
+
+                if (t.Children().Count() == 0)
+                    return null;
+                children = t.Children();
+
+                while(children.Count()>0)
+                {
+                    foreach(var child in children)
+                    {
+                     
+                        JsonReader reader = child.CreateReader();
+                        Console.WriteLine(reader.Path);
+                        if (reader.Path.Equals("abstracts-retrieval-response.authkeywords"))
+                        {
+                            Console.WriteLine(reader.Path);
+                            citationInfo = child;
+                         //   break;
+                        }
+
+                        if(reader.Path.Equals("abstracts-retrieval-response.subject-areas"))
+                        {
+                            subjectAreas = child;
+                            Console.WriteLine(subjectAreas);
+                        }
+                                  
+                        
+                    }
+                    if (children.Children().Count() == 0)
+                        break;
+                    children = (JEnumerable < JToken >) children.Children();
+                    
+                }
+
+             
+                var authorKeyWords = citationInfo["author-keyword"];
+                var subjects = subjectAreas["subject-area"];
+
                 Console.WriteLine(authorKeyWords);
                 foreach (var a in authorKeyWords)
                 {
                    
                     result.Add(a["$"].ToString());
+                }
+
+                foreach (var s in subjects)
+                {
+                    result.Add(s["$"].ToString());
                 }
             } catch(Exception e)
             {
@@ -104,30 +144,17 @@ namespace RestSandbox
                 
 
 
-           // Console.WriteLine(t["search-results"].Children().First()["preferred-name"]);
-            Console.WriteLine(response.IsSuccessful);
-            Console.WriteLine(response.StatusCode);
-
-            return result;
+           return result;
         }
 
-        public HashSet<String> GetKeyWords()
+       
+        public HashSet<String> SearchByAuthorID(String authorID)
         {
-            HashSet<String> keywords = new HashSet<String>();
-
-            return keywords;
-        }
-
-        public String SearchByAuthorID(String authorID)
-        {
-            String result = "";
+            HashSet<String> result = new HashSet<string>();
 
             var client = new RestClient(" https://api.elsevier.com/content/search/scopus");
             var request = new RestRequest(Method.GET);
             request.AddHeader("X-ELS-APIKey", "4a70171325e8753d35fd83ba22370741");
-            // request.AddHeader("X-ELS-ReqId", "gennaroimperatore");
-            //request.AddHeader("X-ELS-ResourceVersion", "new");
-            //request.AddHeader("content-type", "application/x-www-form-urlencoded");
             request.AddHeader("Accept", "application/json");
             request.AddParameter("query", String.Format("AU-ID({0})", authorID));
 
@@ -144,7 +171,10 @@ namespace RestSandbox
                 {
                     Console.WriteLine(pub["eid"]);
                     eid = pub["eid"].ToString();
-                    SearchByPublication(eid);
+                    SearchByPublication(eid).ToList().ForEach(x=> result.Add(x));
+                  
+                    
+
 
                 }
              //   

@@ -16,8 +16,8 @@ namespace RestSandbox
 
             // Console.WriteLine(parseHubExtractor.GetResearcherORCIDID());
 
-            // MDBiSchoolsReade dBiSchoolsReade = new MDBiSchoolsReade();
-            //  dBiSchoolsReade.GetDataBaseObject();
+             MDBiSchoolsReade dBiSchoolsReade = new MDBiSchoolsReade();
+              dBiSchoolsReade.GetDataBaseObject();
 
             //  new ParseHubExtractor().syncedPoll(3);
 
@@ -26,10 +26,7 @@ namespace RestSandbox
             //   NLPEngine nLPEngine = new NLPEngine();
             // nLPEngine.ExtractKeyWords();
 
-            ElesvierAPI elesvier = new ElesvierAPI();
-            //elesvier.SearchByAuthor("Gennaro", "Imperatore", "University of Strathclyde");
-            //elesvier.SearchByPublication("Imperatore", "University of Strathclyde");
-            elesvier.SearchByAuthorID(elesvier.getAuthorID("Gennaro", "Imperatore", "University of Strathclyde"));
+           
             Console.ReadLine();
         }
 

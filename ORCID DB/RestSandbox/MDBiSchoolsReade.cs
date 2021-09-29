@@ -19,8 +19,8 @@ namespace RestSandbox
             try
             {
                 MongoClient client = new MongoClient(uri);
-                foreach (String name in client.ListDatabaseNames().ToList())
-                    Console.WriteLine(name);
+               /* foreach (String name in client.ListDatabaseNames().ToList())
+                    Console.WriteLine(name);*/
 
                 IMongoDatabase ischoolsDB = client.GetDatabase("ischdb_experimental");
                
@@ -36,35 +36,44 @@ namespace RestSandbox
 
                 bool fileCreated = File.Exists(path);
 
-                if (!fileCreated)
+                if (true)
                 {
-                    StreamWriter listWriter = new StreamWriter(path, false);
+                    // StreamWriter listWriter = new StreamWriter(path, false);
                     foreach (var f in facultyDocuments.Find(new BsonDocument()).ToList())
                     {
                         // Console.WriteLine(f.ToJson());
                         String name = f.GetValue("name").AsString;
                         String url = f.GetValue("url").AsString;
                         String orcidID = "";
+                        
+
+                        ElesvierAPI elesvier = new ElesvierAPI();
+                        //elesvier.SearchByAuthor("Gennaro", "Imperatore", "University of Strathclyde");
+                        //elesvier.SearchByPublication("Imperatore", "University of Strathclyde");
+
+
+                     var keywordsForAuthor =   elesvier.SearchByAuthorID(elesvier.getAuthorID("Gennaro", "Imperatore", "University of Strathclyde"));
                         Console.WriteLine();
-                        if (url.Contains("strath.ac.uk"))
-                        {
+                        /*   if (url.Contains("strath.ac.uk"))
+                           {
+                          
+                               orcidID = parseHubExtractor.GetResearcherORCIDID(url, name);
 
-                            orcidID = parseHubExtractor.GetResearcherORCIDID(url, name);
+                               listWriter.WriteLine(name + ":" + orcidID);
 
-                            listWriter.WriteLine(name + ":" + orcidID);
+                               if (orcidID != null)
 
-                            if (orcidID != null)
-
-                            {
-                                // add the orcid id to our database
-                                var filter = Builders<BsonDocument>.Filter.Eq("name", f["name"] );
-                                var update = Builders<BsonDocument>.Update.Set("orcidid", orcidID);
-                                facultyDocuments.UpdateOne(filter, update);
-                            }
-                        }
-                        index++;
+                               {
+                                   // add the orcid id to our database
+                                   var filter = Builders<BsonDocument>.Filter.Eq("name", f["name"] );
+                                   var update = Builders<BsonDocument>.Update.Set("orcidid", orcidID);
+                                   facultyDocuments.UpdateOne(filter, update);
+                               }
+                           }
+                           index++;
+                       }
+                       listWriter.Close();*/
                     }
-                    listWriter.Close();
                 }
                 else // we have a list of orcid ids already....
                 {
