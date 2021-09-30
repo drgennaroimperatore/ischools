@@ -14,6 +14,70 @@ namespace RestSandbox
     {
         private const string uri = "mongodb+srv://gennaro:sha9tTer@ischdb-experimental.hmxwz.mongodb.net/ischdb_experimental?authSource=admin";
 
+        private String[] FormatNameStyle(String name)
+        {
+            String[] formattedName = new String[2];
+
+            String[] titles = {"Mr","Ms","Miss","Mrs","Dr","Prof","Doctor","Professor"};
+            name = name.Replace(".", ""); //remove dots after title
+
+            String[] splittedName = { };
+            
+
+            //remove titles from the name
+            if(name.Contains(","))  //format 1 if name contains a comma the first part is the surname
+            {
+              splittedName  = name.Split(',');
+                /// splittedName.ToList().ForEach(x => x.Trim());         
+                if (splittedName.Count() > 1)
+                {
+                    splittedName = splittedName.Select(x=>x.Trim()).ToArray();
+                    foreach(String t in titles)
+                    {
+                        for (int i= 0; i<splittedName.Count(); i++)
+                        splittedName[i] = splittedName[i].Replace(t, "").Trim();
+                        
+                    }
+                    
+                    formattedName = new string [] { splittedName[1], splittedName[0]};
+                }
+            }
+            else
+            {
+                 splittedName = name.Split(' ');
+
+                if (splittedName.Count() > 1)
+                {
+                    splittedName = splittedName.Where(x => !titles.Contains(x)).ToArray();
+                    // formattedName = splittedName[0] + " " + splittedName[1];
+                   
+                   for (int i=0; i<splittedName.Count()-1; i++)
+                    {
+
+                        formattedName[0] += splittedName[i] + " ";
+                    }
+                    formattedName[1] = splittedName.Last();
+
+
+            
+                }
+
+            }
+       
+
+            return formattedName;
+        }
+
+        private String GetAffiliation(string email)
+        {
+            String affil = "";
+
+            if (email.EndsWith("arizona.edu"))
+                return "University of Arizona";
+
+            return affil;
+        }
+
         public void GetDataBaseObject()
         {
             try
@@ -45,36 +109,39 @@ namespace RestSandbox
                         String name = f.GetValue("name").AsString;
                         String url = f.GetValue("url").AsString;
                         String orcidID = "";
-                        
+
+                        String[] formattedName = FormatNameStyle(name);
 
                         ElesvierAPI elesvier = new ElesvierAPI();
-                        //elesvier.SearchByAuthor("Gennaro", "Imperatore", "University of Strathclyde");
-                        //elesvier.SearchByPublication("Imperatore", "University of Strathclyde");
-
-
-                     var keywordsForAuthor =   elesvier.SearchByAuthorID(elesvier.getAuthorID("Gennaro", "Imperatore", "University of Strathclyde"));
+                        
+                    
+                    // 
                         Console.WriteLine();
-                        /*   if (url.Contains("strath.ac.uk"))
+                           if (url.Contains("strath.ac.uk"))
                            {
-                          
-                               orcidID = parseHubExtractor.GetResearcherORCIDID(url, name);
+                            var keywordsForAuthor = elesvier.SearchByAuthorID
+                                (elesvier.getAuthorID(formattedName[0], formattedName[1], "University of Strathclyde"));
+                            
 
-                               listWriter.WriteLine(name + ":" + orcidID);
+                            //   orcidID = parseHubExtractor.GetResearcherORCIDID(url, name);
 
-                               if (orcidID != null)
+                            //  listWriter.WriteLine(name + ":" + orcidID);
 
-                               {
-                                   // add the orcid id to our database
-                                   var filter = Builders<BsonDocument>.Filter.Eq("name", f["name"] );
-                                   var update = Builders<BsonDocument>.Update.Set("orcidid", orcidID);
-                                   facultyDocuments.UpdateOne(filter, update);
-                               }
-                           }
+                            /*  if (orcidID != null)
+
+                              {
+                                  // add the orcid id to our database
+                                  var filter = Builders<BsonDocument>.Filter.Eq("name", f["name"] );
+                                  var update = Builders<BsonDocument>.Update.Set("orcidid", orcidID);
+                                  facultyDocuments.UpdateOne(filter, update);
+                              }*/
+                            Console.WriteLine(keywordsForAuthor);
+                        }
                            index++;
                        }
-                       listWriter.Close();*/
+                      // listWriter.Close();
                     }
-                }
+                
                 else // we have a list of orcid ids already....
                 {
                     var workCollection = ischoolsDB.GetCollection<BsonDocument>("works");

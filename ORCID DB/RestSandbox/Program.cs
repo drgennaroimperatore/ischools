@@ -16,8 +16,11 @@ namespace RestSandbox
 
             // Console.WriteLine(parseHubExtractor.GetResearcherORCIDID());
 
-             MDBiSchoolsReade dBiSchoolsReade = new MDBiSchoolsReade();
-              dBiSchoolsReade.GetDataBaseObject();
+            // MDBiSchoolsReade dBiSchoolsReade = new MDBiSchoolsReade();
+            //  dBiSchoolsReade.GetDataBaseObject();
+
+            MicrosoftKnowledgeAPI microsoftKnowledgeAPI = new MicrosoftKnowledgeAPI();
+            microsoftKnowledgeAPI.CalculateSemanticSimilarityBetweenTerms("smartphones", "mobile");
 
             //  new ParseHubExtractor().syncedPoll(3);
 

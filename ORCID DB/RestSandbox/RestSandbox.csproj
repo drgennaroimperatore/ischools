@@ -195,8 +195,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ACMClassificationXMLReader.cs" />
     <Compile Include="ElesvierAPI.cs" />
     <Compile Include="MDBiSchoolsReade.cs" />
+    <Compile Include="MicrosoftKnowledgeAPI.cs" />
     <Compile Include="NLPEngine.cs" />
     <Compile Include="OrcidExtractor.cs" />
     <Compile Include="ParseHubExtractor.cs" />
