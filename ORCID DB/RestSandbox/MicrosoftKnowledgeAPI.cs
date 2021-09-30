@@ -32,7 +32,7 @@ namespace RestSandbox
                 return 0;
             }
 
-          Console.WriteLine( response.Content);
+        //  Console.WriteLine( response.Content);
 
             return result;
         }

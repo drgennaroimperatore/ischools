@@ -29,17 +29,17 @@ namespace RestSandbox
             try
             {
                 mDocument.Load(path);
-                
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 mInitialised = false;
             }
 
             mInitialised = true;
 
-         nodeConceptList = mDocument.GetElementsByTagName("skos:Concept");
-           
+            nodeConceptList = mDocument.GetElementsByTagName("skos:Concept");
+
         }
 
         public String GetNextCategory()
@@ -55,9 +55,14 @@ namespace RestSandbox
             mConceptIndex++;
 
             XmlNode labelNode = nodeConceptList.Item(mConceptIndex).FirstChild;
-            return labelNode.InnerText;
+            if (labelNode == null)
+                return "";
+            String label = labelNode.InnerText;
+            if (label == null)
+                return "";
+            return label;
 
-            
+
         }
 
         public void CleanUP()

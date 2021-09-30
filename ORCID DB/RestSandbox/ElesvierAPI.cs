@@ -61,7 +61,7 @@ namespace RestSandbox
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+        //        Console.WriteLine(e.Message);
             }
            // Console.WriteLine(response.IsSuccessful);
            // Console.WriteLine(response.StatusCode);
@@ -100,10 +100,10 @@ namespace RestSandbox
                     {
                      
                         JsonReader reader = child.CreateReader();
-                        Console.WriteLine(reader.Path);
+         //               Console.WriteLine(reader.Path);
                         if (reader.Path.Equals("abstracts-retrieval-response.authkeywords"))
                         {
-                            Console.WriteLine(reader.Path);
+            //                Console.WriteLine(reader.Path);
                             citationInfo = child;
                          //   break;
                         }
@@ -111,7 +111,7 @@ namespace RestSandbox
                         if(reader.Path.Equals("abstracts-retrieval-response.subject-areas"))
                         {
                             subjectAreas = child;
-                            Console.WriteLine(subjectAreas);
+               //             Console.WriteLine(subjectAreas);
                         }
                                   
                         
@@ -126,7 +126,7 @@ namespace RestSandbox
                 var authorKeyWords = citationInfo["author-keyword"];
                 var subjects = subjectAreas["subject-area"];
 
-                Console.WriteLine(authorKeyWords);
+         //       Console.WriteLine(authorKeyWords);
                 foreach (var a in authorKeyWords)
                 {
                    
@@ -139,7 +139,7 @@ namespace RestSandbox
                 }
             } catch(Exception e)
             {
-                Console.WriteLine(e.Message);
+    //            Console.WriteLine(e.Message);
             }
                 
 
@@ -169,7 +169,7 @@ namespace RestSandbox
                 //Console.WriteLine(publications);
                 foreach (var pub in publications.Children())
                 {
-                    Console.WriteLine(pub["eid"]);
+                   // Console.WriteLine(pub["eid"]);
                     eid = pub["eid"].ToString();
                     SearchByPublication(eid).ToList().ForEach(x=> result.Add(x));
                   
@@ -181,7 +181,7 @@ namespace RestSandbox
             }
             catch(Exception e)
             {
-                Console.WriteLine(e.Message);
+        //        Console.WriteLine(e.Message);
             }
           //  
            // Console.WriteLine(response.IsSuccessful);

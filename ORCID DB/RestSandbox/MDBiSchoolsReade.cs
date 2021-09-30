@@ -103,6 +103,8 @@ namespace RestSandbox
                 }
 
             }
+            if (currentMax < 0.50)
+                return null;
 
             return classification;
         }
@@ -142,30 +144,45 @@ namespace RestSandbox
                         String[] formattedName = FormatNameStyle(name);
 
                         ElesvierAPI elesvier = new ElesvierAPI();
-                        
-                    
-                    
-                        Console.WriteLine();
+                       
                            if (url.Contains("strath.ac.uk"))
                            {
                             var keywordsForAuthor = elesvier.SearchByAuthorID
                                 (elesvier.getAuthorID(formattedName[0], formattedName[1], "University of Strathclyde"));
+                            if (keywordsForAuthor == null)
+                                continue;
+                            Console.WriteLine("Adding Keywords for " + name);
 
+                            // add the keywords  to our database
+                            var filter = Builders<BsonDocument>.Filter.Eq("name", f["name"]);
+                            /*  var update = Builders<BsonDocument>.Update.Set("unclassifiedKeyWords", keywordsForAuthor);
+                              facultyDocuments.UpdateOne(filter, update);*/
+
+
+                            HashSet<KeyValuePair<string, string>> acmKeyWords = new HashSet<KeyValuePair<string, string>>();
                             foreach (var keyword in keywordsForAuthor)
-                            {
-                                Console.WriteLine("Looking for classification for word " + keyword);
-                               var classification = FindClosestACMClassification(keyword);
-                                if(classification==null)// not found
-                                {
-                                    Console.WriteLine("Not found");
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Found :" + keyword);
-                                }
+                             {
+                                 Console.WriteLine("Looking for classification for word " + keyword);
+                                var classification = FindClosestACMClassification(keyword);
+                               
+                                 if(classification==null)// not found
+                                 {
+                                     //Console.WriteLine("Not found");
+                                 }
+                                 else
+                                 {
+                                     Console.WriteLine("Found : " + classification);
+                                    acmKeyWords.Add(new KeyValuePair<string, string>(keyword, classification));
+
+                                 }
 
                             }
-                            
+                            if (keywordsForAuthor.Count > 0)
+                            {
+                                var update = Builders<BsonDocument>.Update.Set("ACMKeywords", acmKeyWords);
+                                facultyDocuments.UpdateOne(filter, update);
+                            }
+
 
                             //   orcidID = parseHubExtractor.GetResearcherORCIDID(url, name);
 
@@ -174,12 +191,9 @@ namespace RestSandbox
                             /*  if (orcidID != null)
 
                               {
-                                  // add the orcid id to our database
-                                  var filter = Builders<BsonDocument>.Filter.Eq("name", f["name"] );
-                                  var update = Builders<BsonDocument>.Update.Set("orcidid", orcidID);
-                                  facultyDocuments.UpdateOne(filter, update);
+                                 
                               }*/
-                            Console.WriteLine(keywordsForAuthor);
+                          //  Console.WriteLine(keywordsForAuthor);
                         }
                            index++;
                        }
