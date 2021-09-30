@@ -12,16 +12,24 @@ namespace RestSandbox
     {
         XmlDocument mDocument = new XmlDocument();
         bool mInitialised = false;
+        int mConceptIndex = -1;
+        XmlNodeList nodeConceptList = null;
+
+
 
 
         private void Initialise()
         {
-            string filename =
-            string path = Directory.GetCurrentDirectory();
+            string filename = "acm.xml";
+            string path = Path.Combine(Directory.GetCurrentDirectory(), filename);
+
+            if (!File.Exists(path))
+                return;
 
             try
             {
-                mDocument.Load
+                mDocument.Load(path);
+                
             }
             catch(Exception e)
             {
@@ -30,10 +38,27 @@ namespace RestSandbox
 
             mInitialised = true;
 
-            
+         nodeConceptList = mDocument.GetElementsByTagName("skos:Concept");
+           
         }
 
-        public void  ()
+        public String GetNextCategory()
+        {
+            String category = "";
+
+            if (!mInitialised)
+                Initialise();
+
+            if (nodeConceptList.Count - 1 < mConceptIndex)
+                return null;
+
+            mConceptIndex++;
+
+            XmlNode labelNode = nodeConceptList.Item(mConceptIndex).FirstChild;
+            return labelNode.InnerText;
+
+            
+        }
 
         public void CleanUP()
         {

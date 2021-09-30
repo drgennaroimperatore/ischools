@@ -16,12 +16,10 @@ namespace RestSandbox
 
             // Console.WriteLine(parseHubExtractor.GetResearcherORCIDID());
 
-            // MDBiSchoolsReade dBiSchoolsReade = new MDBiSchoolsReade();
-            //  dBiSchoolsReade.GetDataBaseObject();
+             MDBiSchoolsReade dBiSchoolsReade = new MDBiSchoolsReade();
+              dBiSchoolsReade.GetDataBaseObject();
 
-            MicrosoftKnowledgeAPI microsoftKnowledgeAPI = new MicrosoftKnowledgeAPI();
-            microsoftKnowledgeAPI.CalculateSemanticSimilarityBetweenTerms("smartphones", "mobile");
-
+            
             //  new ParseHubExtractor().syncedPoll(3);
 
             // OrcidExtractor orcidExtractor = new OrcidExtractor();
@@ -29,7 +27,10 @@ namespace RestSandbox
             //   NLPEngine nLPEngine = new NLPEngine();
             // nLPEngine.ExtractKeyWords();
 
-           
+            
+
+
+
             Console.ReadLine();
         }
 

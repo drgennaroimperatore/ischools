@@ -78,6 +78,35 @@ namespace RestSandbox
             return affil;
         }
 
+        private String FindClosestACMClassification(string keyword)
+        {
+            String classification = null;
+
+            ACMClassificationXMLReader aCMClassificationXMLReader = new ACMClassificationXMLReader();
+
+            //some preprocessing on the keyword
+            keyword = keyword.Replace("-", " ");
+
+            string ACMLabel = "";
+            double currentMax = double.MinValue;
+            while((ACMLabel = aCMClassificationXMLReader.GetNextCategory())!=null)
+            {
+                 MicrosoftKnowledgeAPI microsoftKnowledgeAPI = new MicrosoftKnowledgeAPI();
+                 double similarity = 
+                    microsoftKnowledgeAPI.CalculateSemanticSimilarityBetweenTerms(ACMLabel, keyword);
+                if (similarity > currentMax)
+                {
+                    currentMax = similarity;
+                    classification = ACMLabel;
+                    if (similarity == 1.0)
+                        return classification;
+                }
+
+            }
+
+            return classification;
+        }
+
         public void GetDataBaseObject()
         {
             try
@@ -115,12 +144,27 @@ namespace RestSandbox
                         ElesvierAPI elesvier = new ElesvierAPI();
                         
                     
-                    // 
+                    
                         Console.WriteLine();
                            if (url.Contains("strath.ac.uk"))
                            {
                             var keywordsForAuthor = elesvier.SearchByAuthorID
                                 (elesvier.getAuthorID(formattedName[0], formattedName[1], "University of Strathclyde"));
+
+                            foreach (var keyword in keywordsForAuthor)
+                            {
+                                Console.WriteLine("Looking for classification for word " + keyword);
+                               var classification = FindClosestACMClassification(keyword);
+                                if(classification==null)// not found
+                                {
+                                    Console.WriteLine("Not found");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Found :" + keyword);
+                                }
+
+                            }
                             
 
                             //   orcidID = parseHubExtractor.GetResearcherORCIDID(url, name);
