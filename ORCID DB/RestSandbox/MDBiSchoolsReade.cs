@@ -20,6 +20,7 @@ namespace RestSandbox
 
             String[] titles = {"Mr","Ms","Miss","Mrs","Dr","Prof","Doctor","Professor"};
             name = name.Replace(".", ""); //remove dots after title
+           
 
             String[] splittedName = { };
             
@@ -120,10 +121,11 @@ namespace RestSandbox
                 IMongoDatabase ischoolsDB = client.GetDatabase("ischdb_experimental");
                
               var facultyDocuments = ischoolsDB.GetCollection<BsonDocument>("faculty",null);
+                var institutions = ischoolsDB.GetCollection<BsonDocument>("institutions", null);
                 
                // parseHubExtractor.GetResearcherORCIDID();
 
-                int index = 0;
+                float index = 0;
                 ParseHubExtractor parseHubExtractor = new ParseHubExtractor();
                 String path = Directory.GetCurrentDirectory();
                 String filename = "orcid.txt";
@@ -139,28 +141,52 @@ namespace RestSandbox
                         // Console.WriteLine(f.ToJson());
                         String name = f.GetValue("name").AsString;
                         String url = f.GetValue("url").AsString;
+                        BsonObjectId schoolID = f.GetValue("ischool_id").AsObjectId;
+                      var val =  BsonValue.Create("");
+
+                        if (!f.TryGetValue("unclassifiedKeyWords", out val))
+                        {
+                            index++;
+                            continue;
+                        }
+                            
+
+                        int nKeywords = f.GetValue("unclassifiedKeyWords").AsBsonArray.Count;
+                        long facultyTotal = facultyDocuments.Count(new BsonDocument());
+                        if (nKeywords == 0)
+                            index++;
+                        Console.WriteLine(100-(index/(float)facultyTotal)*100);
+
+                        continue;
+
+                        if (schoolID == null)
+                            continue;
                         String orcidID = "";
+
+                        String universityName = institutions.Find(Builders<BsonDocument>.Filter.Eq("_id", schoolID)).ToList().First()["name"].AsString;
+                        if (universityName.Equals("University of Strathclyde"))
+                            continue;
+                        
 
                         String[] formattedName = FormatNameStyle(name);
 
                         ElesvierAPI elesvier = new ElesvierAPI();
                        
-                           if (url.Contains("strath.ac.uk"))
-                           {
+                           
                             var keywordsForAuthor = elesvier.SearchByAuthorID
-                                (elesvier.getAuthorID(formattedName[0], formattedName[1], "University of Strathclyde"));
+                                (elesvier.getAuthorID(formattedName[0], formattedName[1], universityName));
                             if (keywordsForAuthor == null)
                                 continue;
                             Console.WriteLine("Adding Keywords for " + name);
 
                             // add the keywords  to our database
                             var filter = Builders<BsonDocument>.Filter.Eq("name", f["name"]);
-                            /*  var update = Builders<BsonDocument>.Update.Set("unclassifiedKeyWords", keywordsForAuthor);
-                              facultyDocuments.UpdateOne(filter, update);*/
+                              var update = Builders<BsonDocument>.Update.Set("unclassifiedKeyWords", keywordsForAuthor);
+                              facultyDocuments.UpdateOne(filter, update);
 
 
                             HashSet<KeyValuePair<string, string>> acmKeyWords = new HashSet<KeyValuePair<string, string>>();
-                            foreach (var keyword in keywordsForAuthor)
+                            /*foreach (var keyword in keywordsForAuthor)
                              {
                                  Console.WriteLine("Looking for classification for word " + keyword);
                                 var classification = FindClosestACMClassification(keyword);
@@ -181,7 +207,7 @@ namespace RestSandbox
                             {
                                 var update = Builders<BsonDocument>.Update.Set("ACMKeywords", acmKeyWords);
                                 facultyDocuments.UpdateOne(filter, update);
-                            }
+                            }*/
 
 
                             //   orcidID = parseHubExtractor.GetResearcherORCIDID(url, name);
@@ -194,7 +220,7 @@ namespace RestSandbox
                                  
                               }*/
                           //  Console.WriteLine(keywordsForAuthor);
-                        }
+                        
                            index++;
                        }
                       // listWriter.Close();
@@ -256,6 +282,8 @@ namespace RestSandbox
             catch (Exception e)
             {
                 Console.WriteLine("Error: " + e.Message);
+                Console.WriteLine(e.StackTrace);
+                Console.WriteLine(e.ToString());
             }
 
            

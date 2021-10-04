@@ -53,13 +53,15 @@ namespace RestSandbox
                 return null;
 
             mConceptIndex++;
-
-            XmlNode labelNode = nodeConceptList.Item(mConceptIndex).FirstChild;
+            var concept = nodeConceptList.Item(mConceptIndex);
+            if (concept == null)
+                return null;
+            XmlNode labelNode = concept.FirstChild;
             if (labelNode == null)
-                return "";
+                return null;
             String label = labelNode.InnerText;
             if (label == null)
-                return "";
+                return null;
             return label;
 
 
